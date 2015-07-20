@@ -1,0 +1,18 @@
+[
+	{
+		"title": "node",
+		"open": true,
+		"children": [
+			{
+				"title": "subnode - 1",
+				"open": false,
+				"children": []
+			},
+			{
+				"title": "subnode - 2",
+				"open": false,
+				"children": []
+			}
+		]
+	}
+]
