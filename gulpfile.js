@@ -7,9 +7,9 @@ var gulp = require('gulp'),
 	del = require('del');
 
 var paths = {
-	scripts: ['app/*.js', 'app/**/*.js', 'app/**/**/*.js', 'app/**/**/**/*.js', 'app/**/**/**/**/*.js', 'app/**/**/**/**/**/*.js'],
-	styles: ['Content/*.css', 'Content/**/*.css'],
-	fonts: 'docs/fonts/*.*'
+	scripts: ['App/*.js', 'App/**/*.js', 'App/**/**/*.js', 'App/**/**/**/*.js', 'App/**/**/**/**/*.js', 'App/**/**/**/**/**/*.js'],
+	styles: ['Content/css/*.css', 'Content/css/**/*.css'],
+	fonts: 'Content/fonts/*.*'
 }
 
 gulp.task('cleanWatcher', function (cb) {

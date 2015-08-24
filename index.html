@@ -7,11 +7,60 @@
 		<link rel="stylesheet" href="build/css/all.css" />
 	</head>
 <body>
-	
+	<header>
+		<nav>
+			<ul>
+				<li>
+					<a href="#">Главная</a>
+				</li>
+				<li>
+					<a class="active" href="#">Таблица</a>
+				</li>
+				<li>
+					<a href="#">Форма</a>
+				</li>
+			</ul>
+		</nav>
+	</header>
+	<aside>
+		<section class="aside-header">
+			<div class="container">
+				Таблица
+				<div class="header-info">
+					Всего элементов: <b data-bind="text: items().length"></b>
+				</div>
+			</div>
+		</section>
+		<section class="aside-content">
+			<div class="container">
+				<div class="header-info">
+					<button class="btn-add" data-bind="enable: items().length < 10, click: addItem" title="Добавить"></button>
+					<button class="btn-del" data-bind="click: removeAll" title="Удалить всё"></button>
+				</div>
+				<table class="default-table">
+					<tbody data-bind="foreach: items">
+						<tr>
+							<td data-bind="text: $data.id"></td>
+							<td data-bind="text: $data.name"></td>
+							<td>
+								<button class="btn-info"></button>
+								<button class="btn-del" data-bind="click: $root.removeItem"></button>
+							</td>
+						</tr>
+					</tbody>
+					<tbody>
+						<tr>
+							<td class="clear-table-error" data-bind="visible: items().length < 1">Нет элементов в таблице.</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</section>
+	</aside>
 
 
 
-
+	<script type="text/javascript" src="./bower_components/knockout/dist/knockout.js"></script>
 	<script src="build/js/all.min.js"></script>
 </body>
 </html>
