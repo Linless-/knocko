@@ -5,59 +5,100 @@
 		<meta charset="utf-8" />
 		<title>Примеры кнокушки</title>
 		<link rel="stylesheet" href="build/css/all.css" />
+		<link rel="icon" href="favicon.gif" type="image/x-icon" />
 	</head>
 <body>
-	<header>
-		<nav>
+
+	<header class="wrap header">
+		<h1 class="title b-container">Knockoushko</h1>
+
+		<nav class="b-container">
 			<ul>
 				<li>
 					<a href="#">Главная</a>
 				</li>
 				<li>
-					<a class="active" href="#">Таблица</a>
+					<a href="#" class="active">Таблица</a>
+				</li>
+				<li>
+					<a href="#">Блоки</a>
 				</li>
 				<li>
 					<a href="#">Форма</a>
 				</li>
 			</ul>
 		</nav>
+
 	</header>
-	<aside>
-		<section class="aside-header">
-			<div class="container">
-				Таблица
-				<div class="header-info">
-					Всего элементов: <b data-bind="text: items().length + ' / 10'"></b>
+
+	<aside class="wrap">
+		<div class="b-container">
+
+			<div class="two-column">
+				<div>
+					<h1>Таблица</h1>
+				</div>
+				<div class="align-r">
+					Всего элементов: <b data-bind="text: items().length"></b> / <input data-bind="value: maxLengthTable" type="text" class="input-number" max-length="2">
 				</div>
 			</div>
-		</section>
-		<section class="aside-content">
-			<div class="container">
-				<div class="header-info">
-					<button class="btn-add" data-bind="enable: items().length < 10, click: addItem" title="Добавить"></button>
-					<button class="btn-del" data-bind="click: removeAll" title="Удалить всё"></button>
-				</div>
-				<table class="default-table">
-					<tbody data-bind="foreach: items">
-						<tr>
-							<td data-bind="text: $data.id"></td>
-							<td data-bind="text: $data.name"></td>
-							<td>
-								<button class="btn-info"></button>
-								<button class="btn-del" data-bind="click: $root.removeItem"></button>
-							</td>
-						</tr>
-					</tbody>
-					<tbody>
-						<tr>
-							<td class="clear-table-error" data-bind="visible: items().length < 1">Нет элементов в таблице.</td>
-						</tr>
-					</tbody>
-				</table>
+
+			<div class="panel-btns align-r">
+				<button class="btn-text" data-bind="enable: items().length < maxLengthTable(), click: addItem" title="Добавить юзера">Добавить юзера</button>
+				<button class="btn-text" data-bind="click: removeAll" title="Удалить всё">Удалить всех</button>
 			</div>
-		</section>
+
+			<table class="default-table">
+				<thead>
+					<tr>
+						<td>№</td>
+						<td>Name</td>
+						<td>Phone</td>
+						<td></td>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: items">
+					<tr>
+						<td data-bind="text: $data.id"></td>
+						<td data-bind="text: name"></td>
+						<td data-bind="text: phone"></td>
+						<td>
+							<button class="btn-info" data-bind="click: $root.openModal"></button>
+							<button class="btn-del" data-bind="click: $root.removeItem"></button>
+						</td>
+					</tr>
+				</tbody>
+				<tbody>
+					<tr>
+						<td class="clear-table-error" data-bind="visible: items().length < 1">Нет элементов в таблице.</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</aside>
 
+	<div class="modal-wrap" data-bind="visible: modal.open">
+		<div class="modal b-container">
+			<div class="two-column">
+				<div>
+					<h1>Редактирование пользователя</h1>
+				</div>
+				<div class="align-r">
+					<button class="btn-del" data-bind="click: modal.open(false)"></button>
+				</div>
+			</div>
+
+			<input type="text" class="form-ctrl" data-bind="value: modal.item().name" placeholder="Имя">
+			<input type="text" class="form-ctrl" data-bind="value: modal.item().phone" placeholder="Номер телефона">
+			<input type="text" class="form-ctrl" data-bind="value: modal.item().email" placeholder="E-mail">
+			<input type="text" class="form-ctrl" data-bind="value: modal.item().adress" placeholder="Адресс">
+			<input type="text" class="form-ctrl" data-bind="value: modal.item().card" placeholder="Номер кредитки">
+
+			<footer>
+				<button class="btn-text" data-bind="click: saveItem">Сохранить</button>
+			</footer>
+		</div>
+	</div>
 
 
 	<script type="text/javascript" src="./bower_components/knockout/dist/knockout.js"></script>
