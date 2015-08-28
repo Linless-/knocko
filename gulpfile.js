@@ -61,3 +61,6 @@ gulp.task('combine', ['minifyJs', 'minifyCss']);
 
 // Дефолтный запуск гулпа - gulp
 gulp.task('default', ['watch', 'minifyJs', 'minifyCss', 'fonts', 'connect']);
+
+// Дефолтный запуск гулпа - gulp
+gulp.task('startServer', ['minifyCss', 'fonts', 'connect']);

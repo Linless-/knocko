@@ -1,7 +1,6 @@
-(function(){
-  'use strict';
+define('modules/table', ['knockout'], function(ko) {
 
-  function tableViewModel() {
+  return function() {
     var self = this;
     var names = ['Tashya V. Fuentes', 'Asher X. Pennington', 'Ariel H. Schmidt', 'Bradley R. Hancock', 'Simon V. Brewer'];
 
@@ -59,5 +58,4 @@
       self.modal.open(false);
     }
   }
-  ko.applyBindings(new tableViewModel());
-})();
+});
