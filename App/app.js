@@ -1,28 +1,28 @@
 require.config({
+    baseUrl: "App",
     paths: {
         "knockout": "node/knockout",
+        "jquery": "node/jquery.min",
+        "modules": "modules/",
         "text": "node/text",
-        "jquery": "node/jquery.min"
+        "Sammy": "../bower_components/sammy/lib/sammy"
     }
 });
 
-require(["knockout", "main", "stringTemplateEngine", "text"], function(ko, Main) {
-    var vm = new Main();
+require(["knockout", "Sammy", "text"], function(ko, Sammy) {
 
-    //simple client-side routing - update hash when current section is changed
-    vm.currentSection.subscribe(function(newValue) {
-        location.hash = newValue.name;
+  Sammy(function() {
+    this.get('#/:id', function() {
+      var param = this.params.id;
+      ko.components.register('templates', {
+        viewModel: { require: 'modules/' + param },
+        template: { require: 'text!../templates/' + param + '.html' }
+      });
     });
 
-    var updateSection = function() {
-        vm.updateSection(location.hash.substr(1));
-    };
+    this.get('', function() { this.app.runRoute('get', '#table') });
+  }).run("#/table");
+  
+  ko.applyBindings();
 
-    //respond to hashchange event
-    window.onhashchange = updateSection;
-
-    //initialize
-    updateSection();
-
-    ko.applyBindings(vm);
 });

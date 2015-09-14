@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 		<meta charset="utf-8" />
-		<title>Примеры кнокушки</title>
+		<title>Олудашки</title>
 		<link rel="stylesheet" href="build/css/all.css" />
 		<link rel="icon" href="favicon.gif" type="image/x-icon" />
 	</head>
@@ -15,24 +15,24 @@
 		<nav class="b-container">
 			<ul>
 				<li>
-					<a href="#">Главная</a>
+					<a href="#/home">Главная</a>
 				</li>
 				<li>
-					<a href="#" class="active">Таблица</a>
+					<a href="#/table" class="active">Таблица</a>
 				</li>
 				<li>
-					<a href="#">Блоки</a>
+					<a href="#/blocks">Блоки</a>
 				</li>
 				<li>
-					<a href="#">Форма</a>
+					<a href="#/form">Форма</a>
 				</li>
 			</ul>
 		</nav>
 
 	</header>
 
-	<aside class="wrap" data-bind="with: currentSection">
-		<div class="b-container" data-bind="template:{ name: template, 'if': data, data: data }"></div>
+	<aside class="wrap">
+		<div class="b-container" data-bind="component: 'templates'"></div>
 	</aside>
 
 	<script data-main="App/app" src="App/node/require.js"></script>

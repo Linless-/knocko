@@ -1,6 +1,6 @@
 define('modules/table', ['knockout'], function(ko) {
 
-  return function() {
+  var TableViewModel = function() {
     var self = this;
     var names = ['Tashya V. Fuentes', 'Asher X. Pennington', 'Ariel H. Schmidt', 'Bradley R. Hancock', 'Simon V. Brewer'];
 
@@ -58,4 +58,6 @@ define('modules/table', ['knockout'], function(ko) {
       self.modal.open(false);
     }
   }
+
+  return TableViewModel;
 });
