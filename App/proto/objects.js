@@ -1,11 +1,11 @@
 define('proto/objects', ['knockout'], function(ko) {
 
   var descObject = function() {
-    this.User = function(id, name, email, adress, city, card) {
+    this.User = function(id, name, number, email, adress, city, card) {
       this.id = ko.observable(id);
-      this.name = ko.observable(name || 'No Name');
+      this.name = ko.observable(name !== undefined ? name : 'No Name');
 
-      this.phone = ko.observable('x xxx xxx xx xx');
+      this.phone = ko.observable(number !== undefined ? number : 'x xxx xxx xx xx');
       this.email = email || '';
       this.adress = adress || '';
       this.city = city || '';

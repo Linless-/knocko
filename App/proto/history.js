@@ -24,6 +24,9 @@ define("proto/history", function() {
       } else {
         return false;
       }
+    },
+    push: function(key, obj) {
+      this.history[key].push(obj);
     }
   }
 

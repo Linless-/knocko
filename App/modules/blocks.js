@@ -6,8 +6,8 @@ define('modules/blocks', ['knockout', 'proto/history', 'proto/objects'], functio
     self.items = ko.observableArray([]);
 
     if ( !historyService.search('countItems') ) {
-      historyService.add('countItems', 10);
       self.maxLengthTable = ko.observable(10);
+      historyService.add('countItems', self.maxLengthTable);
     } else {
       self.maxLengthTable = historyService.get('countItems');
     }
