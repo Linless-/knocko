@@ -1,4 +1,4 @@
-define('modules/table', ['knockout'], function(ko) {
+define('modules/tables', ['knockout'], function(ko) {
 
   var TableViewModel = function() {
     var self = this;
@@ -58,6 +58,7 @@ define('modules/table', ['knockout'], function(ko) {
       self.modal.open(false);
     }
   }
+
 
   return TableViewModel;
 });

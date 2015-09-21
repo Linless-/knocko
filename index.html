@@ -14,17 +14,11 @@
 
 		<nav class="b-container">
 			<ul>
-				<li>
-					<a href="#/home">Главная</a>
-				</li>
-				<li>
-					<a href="#/table" class="active">Таблица</a>
-				</li>
-				<li>
-					<a href="#/blocks">Блоки</a>
-				</li>
-				<li>
-					<a href="#/form">Форма</a>
+				<li data-bind="foreach: menu">
+					<a data-bind="text: name,
+												attr: { href: url, title: name },
+												css: { 'active': menuActive(url) }
+												"></a>
 				</li>
 			</ul>
 		</nav>
@@ -32,7 +26,7 @@
 	</header>
 
 	<aside class="wrap">
-		<div class="b-container" data-bind="component: 'templates'"></div>
+		<div class="b-container" data-bind="component: templateRegister"></div>
 	</aside>
 
 	<script data-main="App/app" src="App/node/require.js"></script>
