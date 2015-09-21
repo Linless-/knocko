@@ -1,4 +1,4 @@
-define('modules/tables', ['knockout'], function(ko) {
+define('modules/tables', ['knockout', 'proto/history'], function(ko, historyService) {
 
   var TableViewModel = function() {
     var self = this;
@@ -41,10 +41,12 @@ define('modules/tables', ['knockout'], function(ko) {
     }
     self.addItem = function() {
       self.items.push(new User(self.items().length + 1, names[getRandomInt(0, names.length - 1)]));
+      historyService.add('users', self.items());
     }
     self.removeAll = function() {
       self.items.removeAll();
       self.maxLengthTable(10);
+      historyService.remove('users');
     }
 
     self.openModal = function(item) {

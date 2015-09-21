@@ -1,4 +1,4 @@
-define('modules/home', ['knockout'], function(ko) {
+define('modules/home', ['knockout', 'proto/history'], function(ko, historyService) {
 
   var HomeViewModel = function() {
     var self = this;

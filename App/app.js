@@ -4,6 +4,7 @@ require.config({
         "knockout": "node/knockout",
         "jquery": "node/jquery.min",
         "modules": "modules/",
+        "proto": "proto/",
         "text": "node/text",
         "Sammy": "../bower_components/sammy/lib/sammy"
     }
@@ -28,8 +29,8 @@ require(["knockout", "Sammy", "text"], function(ko, Sammy) {
   var self = this;
   var windowHash = window.location.hash;
 
-  self.templateRegister = ko.observable('tables');
-  registrationTemplate('tables', 'modules/tables', 'text!../templates/tables.html');
+  self.templateRegister = ko.observable('home');
+  registrationTemplate('home', 'modules/home', 'text!../templates/home.html');
 
   self.menu = ko.observableArray([
     new menuItem('Главная', 'home'),
@@ -55,7 +56,6 @@ require(["knockout", "Sammy", "text"], function(ko, Sammy) {
 
     this.get('', function() { this.app.runRoute('get', '#tables') });
   }).run(windowHash);
-
 
 
 });
