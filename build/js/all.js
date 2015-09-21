@@ -4,6 +4,7 @@ require.config({
         "knockout": "node/knockout",
         "jquery": "node/jquery.min",
         "modules": "modules/",
+        "proto": "proto/",
         "text": "node/text",
         "Sammy": "../bower_components/sammy/lib/sammy"
     }
@@ -11,29 +12,155 @@ require.config({
 
 require(["knockout", "Sammy", "text"], function(ko, Sammy) {
 
+  var registrationTemplate = function(name, model, template) {
+    if ( !ko.components.isRegistered(name) ) {
+      ko.components.register(name, {
+        viewModel: { require: model },
+        template: { require: template }
+      });
+    }
+  }
+
+  var menuItem = function(name, url) {
+    this.name = name;
+    this.url = '#/' + url;
+  }
+
+  var self = this;
+  var windowHash = window.location.hash;
+
+  self.templateRegister = ko.observable('home');
+  registrationTemplate('home', 'modules/home', 'text!../templates/home.html');
+
+  self.menu = ko.observableArray([
+    new menuItem('Главная', 'home'),
+    new menuItem('Таблица', 'tables'),
+    new menuItem('Блоки', 'blocks'),
+    new menuItem('Форма', 'forms')
+  ]);
+  self.menuActive = function(url) {
+    if ( url === '#/' + self.templateRegister() ) {
+      return true;
+    }
+  }
+  ko.applyBindings();
+
   Sammy(function() {
     this.get('#/:id', function() {
       var param = this.params.id;
-      self.nameModel('modules/' + param);
-      self.nameTemplate('text!../templates/' + param + '.html');
-      console.log(ko.components.isRegistered('template'));
+      var model = 'modules/' + param;
+      var template = 'text!../templates/' + param + '.html';
+      registrationTemplate(param, model, template)
+      self.templateRegister(param);
     });
 
-    this.get('', function() { this.app.runRoute('get', '#table') });
-  }).run("#/table");
-  
-
-  var self = this;
-  self.nameModel = ko.observable('modules/table');
-  self.nameTemplate = ko.observable('text!../templates/table.html');
-  // ko.components.getComponentNameForNode("table");
-  ko.components.register('template', {
-    viewModel: { require: self.nameModel() },
-    template: { require: self.nameTemplate()}
-  });
-  ko.applyBindings();
+    this.get('', function() { this.app.runRoute('get', '#tables') });
+  }).run(windowHash);
 
 
+});
+
+define('modules/blocks', ['knockout', 'proto/history'], function(ko, historyService) {
+
+  var BlocksViewModel = function() {
+    var self = this;
+
+    function User(id, name) {
+      this.id = ko.observable(id);
+      this.name = ko.observable(name || 'No Name');
+
+      this.phone = ko.observable('x xxx xxx xx xx');
+      this.email = '';
+      this.adress = '';
+      this.city = '';
+      this.card = '';
+    }
+
+    self.maxLengthTable = ko.observable(10);
+    self.items = ko.observableArray([
+      new User(1, 'Tashya V. Fuentes'),
+      new User(2, 'Asher X. Pennington'),
+      new User(3, 'Ariel H. Schmidt'),
+      new User(4, 'Bradley R. Hancock'),
+      new User(5, 'Simon V. Brewer')
+    ]);
+  }
+
+  return BlocksViewModel;
+});
+
+define('modules/home', ['knockout', 'proto/history'], function(ko, historyService) {
+
+  var HomeViewModel = function() {
+    var self = this;
+  }
+
+  return HomeViewModel;
+});
+
+define('modules/tables', ['knockout', 'proto/history'], function(ko, historyService) {
+
+  var TableViewModel = function() {
+    var self = this;
+    var names = ['Tashya V. Fuentes', 'Asher X. Pennington', 'Ariel H. Schmidt', 'Bradley R. Hancock', 'Simon V. Brewer'];
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    var User = function (id, name) {
+      this.id = ko.observable(id);
+      this.name = ko.observable(name || 'No Name');
+
+      this.phone = ko.observable('x xxx xxx xx xx');
+      this.email = '';
+      this.adress = '';
+      this.city = '';
+      this.card = '';
+    }
+
+    // Data
+    self.modal = ko.observableArray([]);
+    self.modal.open = ko.observable(false);
+    self.modal.item = ko.observable({});
+    self.maxLengthTable = ko.observable(10);
+
+    self.items = ko.observableArray([
+      new User(1, 'Tashya V. Fuentes'),
+      new User(2, 'Asher X. Pennington'),
+      new User(3, 'Ariel H. Schmidt'),
+      new User(4, 'Bradley R. Hancock'),
+      new User(5, 'Simon V. Brewer')
+    ]);
+
+    //Options
+    self.removeItem = function(item) {
+      self.items.remove(item);
+    }
+    self.addItem = function() {
+      self.items.push(new User(self.items().length + 1, names[getRandomInt(0, names.length - 1)]));
+      historyService.add('users', self.items());
+    }
+    self.removeAll = function() {
+      self.items.removeAll();
+      self.maxLengthTable(10);
+      historyService.remove('users');
+    }
+
+    self.openModal = function(item) {
+      self.modal.open(true);
+      var item = item;
+      self.modal.item(item);
+    }
+    self.saveItem = function() {
+      self.items()[0] = self.modal.item();
+      self.modal.item({});
+      self.modal.open(false);
+    }
+  }
+
+
+  return TableViewModel;
 });
 
 /*! jQuery v2.1.4 | (c) 2005, 2015 jQuery Foundation, Inc. | jquery.org/license */
@@ -2653,77 +2780,35 @@ define(['module'], function (module) {
     return text;
 });
 
-define('modules/home', ['knockout'], function(ko) {
+define("proto/history", function(ko) {
 
-  var HomeViewModel = function() {
-    var self = this;
-
+  var historyService = function() {
+    this.history = {};
   }
 
-  return HomeViewModel;
-});
-
-define('modules/table', ['knockout'], function(ko) {
-
-  var TableViewModel = function() {
-    var self = this;
-    var names = ['Tashya V. Fuentes', 'Asher X. Pennington', 'Ariel H. Schmidt', 'Bradley R. Hancock', 'Simon V. Brewer'];
-
-    function getRandomInt(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function User(id, name) {
-      this.id = ko.observable(id);
-      this.name = ko.observable(name || 'No Name');
-
-      this.phone = ko.observable('x xxx xxx xx xx');
-      this.email = '';
-      this.adress = '';
-      this.city = '';
-      this.card = '';
-
-      return this;
-    }
-
-    // Data
-    self.modal = ko.observableArray([]);
-    self.modal.open = ko.observable(false);
-    self.modal.item = ko.observable({});
-    self.maxLengthTable = ko.observable(10);
-
-    self.items = ko.observableArray([
-      new User(1, 'Tashya V. Fuentes'),
-      new User(2, 'Asher X. Pennington'),
-      new User(3, 'Ariel H. Schmidt'),
-      new User(4, 'Bradley R. Hancock'),
-      new User(5, 'Simon V. Brewer')
-    ]);
-
-    //Options
-    self.removeItem = function(item) {
-      self.items.remove(item);
-    }
-    self.addItem = function() {
-      self.items.push(new User(self.items().length + 1, names[getRandomInt(0, names.length - 1)]));
-    }
-    self.removeAll = function() {
-      self.items.removeAll();
-      self.maxLengthTable(10);
-    }
-
-    self.openModal = function(item) {
-      self.modal.open(true);
-      var item = item;
-      self.modal.item(item);
-    }
-    self.saveItem = function() {
-      self.items()[0] = self.modal.item();
-      self.modal.item({});
-      self.modal.open(false);
+  historyService.prototype = {
+    add: function(key, obj) {
+      this.history[key] = obj;
+      console.log(this.history);
+    },
+    remove: function(key) {
+      if ( this.search(key) ) {
+        delete this.history[key];
+      } else {
+        console.info('Записей с таким ключом нет.')
+      }
+    },
+    search: function(key) {
+      return this.history.hasOwnProperty(key);
+    },
+    get: function(key) {
+      if ( this.search(key) ) {
+        return this.history[key];
+      } else {
+        return false;
+      }
     }
   }
-  
 
-  return TableViewModel;
+  return new historyService();
 });

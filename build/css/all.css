@@ -334,7 +334,7 @@ h1 {
 aside {
   font-size: 16px;
 }
-  aside .b-container {
+  aside > .b-container {
     padding: 25px;
     min-height: calc(100vh - 200px);
   }
@@ -455,3 +455,15 @@ input[type="text"].form-ctrl {
     .modal footer {
       margin-top: 25px;
     }
+
+
+/**
+ * user-block
+ */
+.user-block {
+  width: 200px;
+  height: 150px;
+  display: inline-block;
+  padding: 10px;
+  
+}

@@ -1,4 +1,4 @@
-define('modules/tables', ['knockout', 'proto/history'], function(ko, historyService) {
+define('modules/tables', ['knockout', 'proto/history', 'proto/objects'], function(ko, historyService, objects) {
 
   var TableViewModel = function() {
     var self = this;
@@ -8,39 +8,29 @@ define('modules/tables', ['knockout', 'proto/history'], function(ko, historyServ
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    function User(id, name) {
-      this.id = ko.observable(id);
-      this.name = ko.observable(name || 'No Name');
-
-      this.phone = ko.observable('x xxx xxx xx xx');
-      this.email = '';
-      this.adress = '';
-      this.city = '';
-      this.card = '';
-
-      return this;
-    }
-
     // Data
     self.modal = ko.observableArray([]);
     self.modal.open = ko.observable(false);
     self.modal.item = ko.observable({});
-    self.maxLengthTable = ko.observable(10);
+    self.items = ko.observableArray([]);
 
-    self.items = ko.observableArray([
-      new User(1, 'Tashya V. Fuentes'),
-      new User(2, 'Asher X. Pennington'),
-      new User(3, 'Ariel H. Schmidt'),
-      new User(4, 'Bradley R. Hancock'),
-      new User(5, 'Simon V. Brewer')
-    ]);
+    if ( !historyService.search('countItems') ) {
+      self.maxLengthTable = ko.observable(10);
+      historyService.add('countItems', self.maxLengthTable);
+    } else {
+      self.maxLengthTable = historyService.get('countItems');
+    }
+
+    if ( historyService.search('users') ) {
+      self.items = ko.observableArray(historyService.get('users'));
+    }
 
     //Options
     self.removeItem = function(item) {
       self.items.remove(item);
     }
     self.addItem = function() {
-      self.items.push(new User(self.items().length + 1, names[getRandomInt(0, names.length - 1)]));
+      self.items.push(new objects.User(self.items().length + 1, names[getRandomInt(0, names.length - 1)]));
       historyService.add('users', self.items());
     }
     self.removeAll = function() {
@@ -58,6 +48,7 @@ define('modules/tables', ['knockout', 'proto/history'], function(ko, historyServ
       self.items()[0] = self.modal.item();
       self.modal.item({});
       self.modal.open(false);
+      historyService.add('users', self.items());
     }
   }
 
