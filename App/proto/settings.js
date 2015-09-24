@@ -3,7 +3,7 @@ define('proto/settings', ['knockout', 'proto/history', 'proto/objects', 'text'],
   // Общие настройки системы и инициализация.
   var settings = function() {
     this.maxLengthItems = ko.observable(10); // Максимальное кол-во объектов.
-    this.templateRegister = ko.observable('home');
+    this.templateRegister = ko.observable('home'); // Текущий state
   };
 
   settings.prototype = {
