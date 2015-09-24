@@ -4,7 +4,7 @@ define('modules/blocks', ['knockout', 'proto/history', 'proto/objects', 'proto/s
     var self = this;
 
     self.items = ko.observableArray([]);
-    self.maxLengthTable = historyService.get('countItems');
+    self.maxLengthTable = settings.maxLengthItems;
 
     if ( historyService.search('users') ) {
       self.items = ko.observableArray(historyService.get('users'));

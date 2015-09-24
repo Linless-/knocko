@@ -1,8 +1,9 @@
-define('proto/settings', ['knockout', 'proto/history', 'proto/objects', 'generic/menu', 'text'], function(ko, historyService, objects) {
+define('proto/settings', ['knockout', 'proto/history', 'proto/objects', 'text'], function(ko, historyService, objects) {
 
   // Общие настройки системы и инициализация.
   var settings = function() {
     this.maxLengthItems = ko.observable(10); // Максимальное кол-во объектов.
+    this.templateRegister = ko.observable('home');
   };
 
   settings.prototype = {
@@ -15,8 +16,11 @@ define('proto/settings', ['knockout', 'proto/history', 'proto/objects', 'generic
         new objects.User(4, 'Bradley R. Hancock', "+7 222 357-55-22", "suscipit.nonummy@ac.co.uk", "333-7545 Neque St.", "Oostende", "4505783597473050"),
         new objects.User(5, 'Simon V. Brewer', "+7 623 473-94-66", "amet.risus.Donec@eunibhvulputate.com", "379 Metus Avenue", "Saint-Prime", "5444664897220206")
       ]);
-      // Инициализация меню
+      // Инициализация меню.
       this.registrationTemplate('menu', 'generic/menu', 'text!../templates/generic/menu.html');
+
+      // Загрузка шаблона при загрузке страницы.
+      this.registrationTemplate('home', 'modules/home', 'text!../templates/modules/home.html');
     },
     registrationTemplate: function(name, model, template) {
       if ( !ko.components.isRegistered(name) ) {

@@ -15,12 +15,10 @@ require(["knockout", "Sammy", "proto/settings", "text"], function(ko, Sammy, set
 
   var self = this;
   var windowHash = window.location.hash;
-
+  self.templateRegister = settings.templateRegister;
   settings.init();
-
-  self.templateRegister = ko.observable('home');
-  settings.registrationTemplate('home', 'modules/home', 'text!../templates/modules/home.html');
   ko.applyBindings();
+
 
   Sammy(function() {
     this.get('#/:id', function() {

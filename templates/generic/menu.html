@@ -3,7 +3,7 @@
     <li data-bind="foreach: menu">
       <a data-bind="text: name,
                     attr: { href: url, title: name },
-                    css: { 'active': menuActive(url) }
+                    css: { 'active': $parent.menuActive(url) }
                     "></a>
     </li>
   </ul>

@@ -1,14 +1,14 @@
-define('generic/menu', ['knockout', 'proto/objects'], function(ko, objects) {
+define('generic/menu', ['knockout', 'proto/objects', 'proto/settings'], function(ko, objects, settings) {
 
   var MenuViewModel = function() {
     var self = this;
 
     self.menuActive = function(url) {
-      if ( url === '#/' + self.templateRegister() ) {
+      if ( url === '#/' + settings.templateRegister() ) {
         return true;
       }
     }
-    
+
     self.menu = ko.observableArray([
       new objects.menuItem('Главная', 'home'),
       new objects.menuItem('Таблица', 'tables'),
@@ -16,6 +16,7 @@ define('generic/menu', ['knockout', 'proto/objects'], function(ko, objects) {
       new objects.menuItem('Форма', 'forms')
     ]);
 
+    console.log(self);
 
   }
 
