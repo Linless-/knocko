@@ -8,8 +8,7 @@
 </div>
 
 <div data-bind="foreach: items">
-  <div class="user-block b-container" data-bind="click: $parent.userBlockToogle,
-                                                 css: { 'user-block_active' : $parent.activeBlock(active()) }">
+  <div class="user-block b-container">
     <div class="user-block__title" data-bind="text: name"></div>
 
     <table class="user-block__info">
@@ -34,5 +33,7 @@
         <td class="user-block__info-text" data-bind="text: card"></td>
       </tr>
     </table>
+    <like-widget params="value: rating"></like-widget>
+
   </div>
 </div>

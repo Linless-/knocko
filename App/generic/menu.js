@@ -16,8 +16,6 @@ define('generic/menu', ['knockout', 'proto/objects', 'proto/settings'], function
       new objects.menuItem('Форма', 'forms')
     ]);
 
-    console.log(self);
-
   }
 
   return MenuViewModel;

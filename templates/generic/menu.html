@@ -1,6 +1,6 @@
 <nav class="b-container">
-  <ul>
-    <li data-bind="foreach: menu">
+  <ul data-bind="foreach: menu">
+    <li>
       <a data-bind="text: name,
                     attr: { href: url, title: name },
                     css: { 'active': $parent.menuActive(url) }

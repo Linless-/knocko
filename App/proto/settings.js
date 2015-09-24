@@ -24,10 +24,17 @@ define('proto/settings', ['knockout', 'proto/history', 'proto/objects', 'text'],
     },
     registrationTemplate: function(name, model, template) {
       if ( !ko.components.isRegistered(name) ) {
-        ko.components.register(name, {
-          viewModel: { require: model },
-          template: { require: template }
-        });
+        if ( typeof(model) === 'function' ) {
+          ko.components.register(name, {
+            viewModel: model,
+            template: template
+          });
+        } else {
+          ko.components.register(name, {
+            viewModel: { require: model },
+            template: { require: template }
+          });
+        }
       }
     }
   }
