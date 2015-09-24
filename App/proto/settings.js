@@ -1,16 +1,12 @@
-define('proto/settings', ['knockout', 'proto/history', 'proto/objects'], function(ko, historyService, objects) {
+define('proto/settings', ['knockout', 'proto/history', 'proto/objects', 'generic/menu', 'text'], function(ko, historyService, objects) {
 
-  var settings = {
+  // Общие настройки системы и инициализация.
+  var settings = function() {
+    this.maxLengthItems = ko.observable(10); // Максимальное кол-во объектов.
+  };
+
+  settings.prototype = {
     init: function() {
-
-      // Инициализация максимального кол-ва объектов в массиве.
-      if ( !historyService.search('countItems') ) {
-        self.maxLengthTable = ko.observable(10);
-        historyService.add('countItems', self.maxLengthTable);
-      } else {
-        self.maxLengthTable = historyService.get('countItems');
-      }
-
       // Инициализация тестовых данных.
       historyService.add('users', [
         new objects.User(1, 'Tashya V. Fuentes', "+7 264 333-55-22", "euismod.est@musAeneaneget.net", "P.O. Box 251, 276 Nec Ave", "Newmarket", "5141178987072785"),
@@ -19,8 +15,18 @@ define('proto/settings', ['knockout', 'proto/history', 'proto/objects'], functio
         new objects.User(4, 'Bradley R. Hancock', "+7 222 357-55-22", "suscipit.nonummy@ac.co.uk", "333-7545 Neque St.", "Oostende", "4505783597473050"),
         new objects.User(5, 'Simon V. Brewer', "+7 623 473-94-66", "amet.risus.Donec@eunibhvulputate.com", "379 Metus Avenue", "Saint-Prime", "5444664897220206")
       ]);
+      // Инициализация меню
+      this.registrationTemplate('menu', 'generic/menu', 'text!../templates/generic/menu.html');
+    },
+    registrationTemplate: function(name, model, template) {
+      if ( !ko.components.isRegistered(name) ) {
+        ko.components.register(name, {
+          viewModel: { require: model },
+          template: { require: template }
+        });
+      }
     }
   }
 
-  return settings;
+  return new settings();
 });

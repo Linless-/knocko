@@ -1,5 +1,6 @@
 define('proto/objects', ['knockout'], function(ko) {
 
+  // Описание частоиспользуемых объектов.
   var descObject = {
     User: function(id, name, number, email, adress, city, card) {
       this.id = ko.observable(id);

@@ -13,21 +13,16 @@
 	<header class="wrap header">
 		<h1 class="title b-container">Knockoushko</h1>
 
-		<nav class="b-container">
-			<ul>
-				<li data-bind="foreach: menu">
-					<a data-bind="text: name,
-												attr: { href: url, title: name },
-												css: { 'active': menuActive(url) }
-												"></a>
-				</li>
-			</ul>
-		</nav>
+		<!-- ko component: "menu" -->
+		<!-- /ko -->
 
 	</header>
 
 	<aside class="wrap">
-		<div class="b-container" data-bind="component: templateRegister"></div>
+		<div class="b-container">
+			<!-- ko component: templateRegister -->
+			<!-- /ko -->
+		</div>
 	</aside>
 
 	<script data-main="App/app" src="App/node/require.js"></script>

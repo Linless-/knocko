@@ -1,4 +1,4 @@
-define('modules/forms', ['knockout', 'proto/history', 'proto/objects'], function(ko, historyService, objects) {
+define('modules/forms', ['knockout', 'proto/history', 'proto/objects', 'proto/settings'], function(ko, historyService, objects, settings) {
 
   var FormsViewModel = function() {
     var self = this;
@@ -18,7 +18,7 @@ define('modules/forms', ['knockout', 'proto/history', 'proto/objects'], function
     });
 
     // Макс кол-во объектов.
-    self.maxLengthTable = historyService.get('countItems');
+    self.maxLengthTable = settings.maxLengthItems;
 
     // Очиста полей и объявление нового объекта.
     self.clear = function() {

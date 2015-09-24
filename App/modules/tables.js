@@ -1,4 +1,4 @@
-define('modules/tables', ['knockout', 'proto/history', 'proto/objects'], function(ko, historyService, objects) {
+define('modules/tables', ['knockout', 'proto/history', 'proto/objects', 'proto/settings'], function(ko, historyService, objects, settings) {
 
   var TableViewModel = function() {
     var self = this;
@@ -13,7 +13,7 @@ define('modules/tables', ['knockout', 'proto/history', 'proto/objects'], functio
     self.modal.open = ko.observable(false);
     self.modal.item = ko.observable({});
     self.items = ko.observableArray([]);
-    self.maxLengthTable = historyService.get('countItems');
+    self.maxLengthTable = settings.maxLengthItems;
 
     if ( historyService.search('users') ) {
       self.items = ko.observableArray(historyService.get('users'));

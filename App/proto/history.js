@@ -1,5 +1,6 @@
 define("proto/history", function() {
 
+  // Сервис для локального хранения данных.
   var historyService = function() {
     this.history = {};
   }

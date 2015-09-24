@@ -1,0 +1,10 @@
+<nav class="b-container">
+  <ul>
+    <li data-bind="foreach: menu">
+      <a data-bind="text: name,
+                    attr: { href: url, title: name },
+                    css: { 'active': menuActive(url) }
+                    "></a>
+    </li>
+  </ul>
+</nav>

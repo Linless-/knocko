@@ -1,4 +1,4 @@
-define('modules/blocks', ['knockout', 'proto/history', 'proto/objects'], function(ko, historyService, objects) {
+define('modules/blocks', ['knockout', 'proto/history', 'proto/objects', 'proto/settings'], function(ko, historyService, objects, settings) {
 
   var BlocksViewModel = function() {
     var self = this;
