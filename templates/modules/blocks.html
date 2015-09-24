@@ -8,7 +8,7 @@
 </div>
 
 <div data-bind="foreach: items">
-  <div class="user-block b-container">
+  <div class="user-block b-container" data-bind="css: userColor(rating)">
     <div class="user-block__title" data-bind="text: name"></div>
 
     <table class="user-block__info">

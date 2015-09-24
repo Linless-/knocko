@@ -22,7 +22,7 @@
     </tr>
   </thead>
   <tbody data-bind="foreach: items">
-    <tr>
+    <tr data-bind="css: userColor(rating)">
       <td data-bind="text: $data.id"></td>
       <td data-bind="text: name"></td>
       <td data-bind="text: phone"></td>

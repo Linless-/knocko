@@ -12,6 +12,11 @@ define('proto/objects', ['knockout'], function(ko) {
       this.city = city || '';
       this.card = card || '';
       this.rating = ko.observable(rating || null);
+      this.userColor = function(rating) {
+        if ( typeof(rating()) === 'number' ) {
+          return 'user-block__color-' + rating();
+        }
+      }
 
       this.active = ko.observable(false);
     },

@@ -439,16 +439,31 @@ input[type="text"].form-ctrl {
   font-size: 14px;
   font-weight: 100;
 }
+.user-block__color-1 {
+  background: rgba(255, 0, 0, 0.66);
+}
+.user-block__color-2 {
+  background: rgba(255, 77, 0, 0.66);
+}
+.user-block__color-3 {
+  background: rgba(255, 191, 0, 0.66);
+}
+.user-block__color-4 {
+  background: rgba(112, 255, 0, 0.39);
+}
+.user-block__color-5 {
+  background: rgba(0, 255, 33, 0.39);
+}
 
 .user-block:hover {
   overflow: auto;
   height: auto;
 }
-.user-block_active .user-block__title {
+.user-block:hover .user-block__title {
   overflow: auto;
   height: auto;
 }
-.user-block_active .user-block__info {
+.user-block:hover .user-block__info {
   white-space: normal;
   word-wrap: break-word;
 }
@@ -474,4 +489,7 @@ input[type="text"].form-ctrl {
 }
 .like-widget__buttons {
   margin: 20px 0;
+}
+.like-widget__text {
+  margin: 10px 0;
 }

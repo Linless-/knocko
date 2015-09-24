@@ -13,27 +13,20 @@ define('modules/blocks', ['knockout', 'proto/history', 'proto/objects', 'proto/s
     self.userBlockToogle = function(item) {
       item.active(!item.active());
     }
-    self.activeBlock = function(status) {
-      return status;
-    }
 
     var ratingModel = function(params) {
       this.value = params.value;
-      this.like = function() {
-        this.value('like');
-      };
-      this.dislike = function() {
-        this.value('dislike');
-      };
+      this.like = function(item) {
+        this.value(item);
+      }.bind(this);
     }
 
     var ratingTemplate = '<div class="like-widget">' +
-      '<div class="like-widget__buttons" data-bind="visible: !value()">' +
-        '<button data-bind="click: like" class="btn-text">Like</button>' +
-        '<button data-bind="click: dislike" class="btn-text">Dislike</button>' +
+      '<div class="like-widget__buttons" data-bind="foreach: [1,2,3,4,5], visible: !value()">' +
+        '<button data-bind="click: $parent.like, text: $data" class="btn-text"></button>' +
       '</div>' +
-      '<div data-bind="visible: value()">' +
-        'Вы <span data-bind="text: value"></span>!' +
+      '<div class="like-widget__text" data-bind="visible: value()">' +
+        'Вы оценили на <span data-bind="text: value"></span>!' +
       '</div>' +
     '</div>';
 
