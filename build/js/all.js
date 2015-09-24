@@ -10,7 +10,7 @@ require.config({
     }
 });
 
-require(["knockout", "Sammy", "text"], function(ko, Sammy) {
+require(["knockout", "Sammy", "proto/history", "proto/objects", "text"], function(ko, Sammy, historyService, objects) {
 
   var registrationTemplate = function(name, model, template) {
     if ( !ko.components.isRegistered(name) ) {
@@ -43,6 +43,7 @@ require(["knockout", "Sammy", "text"], function(ko, Sammy) {
       return true;
     }
   }
+
   ko.applyBindings();
 
   Sammy(function() {
@@ -58,109 +59,71 @@ require(["knockout", "Sammy", "text"], function(ko, Sammy) {
   }).run(windowHash);
 
 
+  // Тестовые данные
+  historyService.add('users', [
+    new objects.User(1, 'Tashya V. Fuentes', "+7 264 333-55-22", "euismod.est@musAeneaneget.net", "P.O. Box 251, 276 Nec Ave", "Newmarket", "5141178987072785"),
+    new objects.User(2, 'Asher X. Pennington', "+7 222 326-55-66", "consectetuer@purus.net", "P.O. Box 981, 6173 Nec, Rd.", "Cras-Avernas", "4257942325854678"),
+    new objects.User(3, 'Ariel H. Schmidt', "+7 231 844-44-66", "magnis.dis.parturient@Integer.net", "Ap #542-5772 Ipsum Avenue", "Pont-Saint-Martin", "5157078013438730"),
+    new objects.User(4, 'Bradley R. Hancock', "+7 222 357-55-22", "suscipit.nonummy@ac.co.uk", "333-7545 Neque St.", "Oostende", "4505783597473050"),
+    new objects.User(5, 'Simon V. Brewer', "+7 623 473-94-66", "amet.risus.Donec@eunibhvulputate.com", "379 Metus Avenue", "Saint-Prime", "5444664897220206")
+  ]);
+
+
 });
 
-define('modules/blocks', ['knockout', 'proto/history'], function(ko, historyService) {
+define("proto/history", function() {
 
-  var BlocksViewModel = function() {
-    var self = this;
+  var historyService = function() {
+    this.history = {};
+  }
 
-    function User(id, name) {
+  historyService.prototype = {
+    add: function(key, obj) {
+      this.history[key] = obj;
+    },
+    remove: function(key) {
+      if ( this.search(key) ) {
+        delete this.history[key];
+      } else {
+        console.info('Записей с таким ключом нет.')
+      }
+    },
+    search: function(key) {
+      return this.history.hasOwnProperty(key);
+    },
+    get: function(key) {
+      if ( this.search(key) ) {
+        return this.history[key];
+      } else {
+        return false;
+      }
+    },
+    push: function(key, obj) {
+      this.history[key].push(obj);
+    }
+  }
+
+  return new historyService();
+});
+
+define('proto/objects', ['knockout'], function(ko) {
+
+  var descObject = function() {
+    this.User = function(id, name, number, email, adress, city, card) {
       this.id = ko.observable(id);
-      this.name = ko.observable(name || 'No Name');
+      this.name = ko.observable(name !== undefined ? name : 'No Name');
 
-      this.phone = ko.observable('x xxx xxx xx xx');
-      this.email = '';
-      this.adress = '';
-      this.city = '';
-      this.card = '';
-    }
+      this.phone = ko.observable(number !== undefined ? number : 'x xxx xxx xx xx');
+      this.email = email || '';
+      this.adress = adress || '';
+      this.city = city || '';
+      this.card = card || '';
 
-    self.maxLengthTable = ko.observable(10);
-    self.items = ko.observableArray([
-      new User(1, 'Tashya V. Fuentes'),
-      new User(2, 'Asher X. Pennington'),
-      new User(3, 'Ariel H. Schmidt'),
-      new User(4, 'Bradley R. Hancock'),
-      new User(5, 'Simon V. Brewer')
-    ]);
-  }
-
-  return BlocksViewModel;
-});
-
-define('modules/home', ['knockout', 'proto/history'], function(ko, historyService) {
-
-  var HomeViewModel = function() {
-    var self = this;
-  }
-
-  return HomeViewModel;
-});
-
-define('modules/tables', ['knockout', 'proto/history'], function(ko, historyService) {
-
-  var TableViewModel = function() {
-    var self = this;
-    var names = ['Tashya V. Fuentes', 'Asher X. Pennington', 'Ariel H. Schmidt', 'Bradley R. Hancock', 'Simon V. Brewer'];
-
-    function getRandomInt(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    var User = function (id, name) {
-      this.id = ko.observable(id);
-      this.name = ko.observable(name || 'No Name');
-
-      this.phone = ko.observable('x xxx xxx xx xx');
-      this.email = '';
-      this.adress = '';
-      this.city = '';
-      this.card = '';
-    }
-
-    // Data
-    self.modal = ko.observableArray([]);
-    self.modal.open = ko.observable(false);
-    self.modal.item = ko.observable({});
-    self.maxLengthTable = ko.observable(10);
-
-    self.items = ko.observableArray([
-      new User(1, 'Tashya V. Fuentes'),
-      new User(2, 'Asher X. Pennington'),
-      new User(3, 'Ariel H. Schmidt'),
-      new User(4, 'Bradley R. Hancock'),
-      new User(5, 'Simon V. Brewer')
-    ]);
-
-    //Options
-    self.removeItem = function(item) {
-      self.items.remove(item);
-    }
-    self.addItem = function() {
-      self.items.push(new User(self.items().length + 1, names[getRandomInt(0, names.length - 1)]));
-      historyService.add('users', self.items());
-    }
-    self.removeAll = function() {
-      self.items.removeAll();
-      self.maxLengthTable(10);
-      historyService.remove('users');
-    }
-
-    self.openModal = function(item) {
-      self.modal.open(true);
-      var item = item;
-      self.modal.item(item);
-    }
-    self.saveItem = function() {
-      self.items()[0] = self.modal.item();
-      self.modal.item({});
-      self.modal.open(false);
+      this.active = ko.observable(false);
     }
   }
 
-
-  return TableViewModel;
+  return new descObject();
 });
 
 /*! jQuery v2.1.4 | (c) 2005, 2015 jQuery Foundation, Inc. | jquery.org/license */
@@ -2780,35 +2743,126 @@ define(['module'], function (module) {
     return text;
 });
 
-define("proto/history", function(ko) {
+define('modules/blocks', ['knockout', 'proto/history', 'proto/objects'], function(ko, historyService, objects) {
 
-  var historyService = function() {
-    this.history = {};
+  var BlocksViewModel = function() {
+    var self = this;
+
+    self.items = ko.observableArray([]);
+
+    if ( !historyService.search('countItems') ) {
+      self.maxLengthTable = ko.observable(10);
+      historyService.add('countItems', self.maxLengthTable);
+    } else {
+      self.maxLengthTable = historyService.get('countItems');
+    }
+
+    if ( historyService.search('users') ) {
+      self.items = ko.observableArray(historyService.get('users'));
+    }
+
+    self.userBlockToogle = function(item) {
+      item.active(!item.active());
+    }
+    self.activeBlock = function(status) {
+      return status;
+    }
+
   }
 
-  historyService.prototype = {
-    add: function(key, obj) {
-      this.history[key] = obj;
-      console.log(this.history);
-    },
-    remove: function(key) {
-      if ( this.search(key) ) {
-        delete this.history[key];
+  return BlocksViewModel;
+});
+
+define('modules/forms', ['knockout', 'proto/history', 'proto/objects'], function(ko, historyService, objects) {
+
+  var FormsViewModel = function() {
+    var self = this;
+    self.clear = function() {
+      if ( !ko.isObservable(self.item) ) {
+        self.item = ko.observable(new objects.User(historyService.get('users').length + 1, "", ""));
       } else {
-        console.info('Записей с таким ключом нет.')
+        self.item(new objects.User(historyService.get('users').length + 1, "", ""));
       }
-    },
-    search: function(key) {
-      return this.history.hasOwnProperty(key);
-    },
-    get: function(key) {
-      if ( this.search(key) ) {
-        return this.history[key];
+    }
+    self.clear();
+    self.add = function() {
+      if ( historyService.search('users') ) {
+        historyService.push('users', self.item());
       } else {
-        return false;
+        historyService.add('users', [self.item()]);
       }
+      self.clear()
+    }
+
+
+  }
+
+  return FormsViewModel;
+});
+
+define('modules/home', ['knockout', 'proto/history'], function(ko, historyService) {
+
+  var HomeViewModel = function() {
+    var self = this;
+  }
+
+  return HomeViewModel;
+});
+
+define('modules/tables', ['knockout', 'proto/history', 'proto/objects'], function(ko, historyService, objects) {
+
+  var TableViewModel = function() {
+    var self = this;
+    var names = ['Tashya V. Fuentes', 'Asher X. Pennington', 'Ariel H. Schmidt', 'Bradley R. Hancock', 'Simon V. Brewer'];
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Data
+    self.modal = ko.observableArray([]);
+    self.modal.open = ko.observable(false);
+    self.modal.item = ko.observable({});
+    self.items = ko.observableArray([]);
+
+    if ( !historyService.search('countItems') ) {
+      self.maxLengthTable = ko.observable(10);
+      historyService.add('countItems', self.maxLengthTable);
+    } else {
+      self.maxLengthTable = historyService.get('countItems');
+    }
+
+    if ( historyService.search('users') ) {
+      self.items = ko.observableArray(historyService.get('users'));
+    }
+
+    //Options
+    self.removeItem = function(item) {
+      self.items.remove(item);
+    }
+    self.addItem = function() {
+      self.items.push(new objects.User(self.items().length + 1, names[getRandomInt(0, names.length - 1)]));
+      historyService.add('users', self.items());
+    }
+    self.removeAll = function() {
+      self.items.removeAll();
+      self.maxLengthTable(10);
+      historyService.remove('users');
+    }
+
+    self.openModal = function(item) {
+      self.modal.open(true);
+      var item = item;
+      self.modal.item(item);
+    }
+    self.saveItem = function() {
+      self.items()[0] = self.modal.item();
+      self.modal.item({});
+      self.modal.open(false);
+      historyService.add('users', self.items());
     }
   }
 
-  return new historyService();
+
+  return TableViewModel;
 });

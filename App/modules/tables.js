@@ -13,13 +13,7 @@ define('modules/tables', ['knockout', 'proto/history', 'proto/objects'], functio
     self.modal.open = ko.observable(false);
     self.modal.item = ko.observable({});
     self.items = ko.observableArray([]);
-
-    if ( !historyService.search('countItems') ) {
-      self.maxLengthTable = ko.observable(10);
-      historyService.add('countItems', self.maxLengthTable);
-    } else {
-      self.maxLengthTable = historyService.get('countItems');
-    }
+    self.maxLengthTable = historyService.get('countItems');
 
     if ( historyService.search('users') ) {
       self.items = ko.observableArray(historyService.get('users'));

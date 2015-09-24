@@ -41,14 +41,8 @@
 
 <div class="modal-wrap" data-bind="visible: modal.open">
   <div class="modal b-container">
-    <div class="two-column">
-      <div>
-        <h1>Редактирование пользователя</h1>
-      </div>
-      <div class="align-r">
-        <button class="btn-del" data-bind="click: modal.open(false)"></button>
-      </div>
-    </div>
+    <h1>Редактирование пользователя</h1>
+    <button class="btn-del" data-bind="click: modal.open(false)"></button>
 
     <input type="text" class="form-ctrl" data-bind="value: modal.item().name" placeholder="Имя">
     <input type="text" class="form-ctrl" data-bind="value: modal.item().phone" placeholder="Номер телефона">

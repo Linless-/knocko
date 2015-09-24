@@ -1,11 +1,18 @@
-<h1>Добавление пользователя</h1>
-<div class="form-block">
-  <form data-bind="with: item">
-    <input type="text" class="form-ctrl" data-bind="textInput: name" placeholder="Имя">
-    <input type="text" class="form-ctrl" data-bind="textInput: phone" placeholder="Номер телефона">
-    <input type="text" class="form-ctrl" data-bind="textInput: email" placeholder="E-mail">
-    <input type="text" class="form-ctrl" data-bind="textInput: adress" placeholder="Адресс">
-    <input type="text" class="form-ctrl" data-bind="textInput: card" placeholder="Номер кредитки">
-    <button class="btn-text btn-text_margin-top_20" data-bind="click: $parent.add">Добавить</button>
-  </form>
+<div class="forms">
+  <h1>Добавление пользователя</h1>
+  <div class="form-block">
+    <div data-bind="with: user">
+      <input type="text" class="form-ctrl" data-bind="textInput: name" placeholder="Имя">
+      <input type="text" class="form-ctrl" data-bind="textInput: surname" placeholder="Фамилия">
+      <input type="text" class="form-ctrl" data-bind="textInput: patronymic" placeholder="Отчество">
+      <div data-bind="text: fullName"></div>
+    </div>
+    <form data-bind="with: item">
+      <input type="text" class="form-ctrl" data-bind="textInput: phone" placeholder="Номер телефона">
+      <input type="text" class="form-ctrl" data-bind="textInput: email" placeholder="E-mail">
+      <input type="text" class="form-ctrl" data-bind="textInput: adress" placeholder="Адресс">
+      <input type="text" class="form-ctrl" data-bind="textInput: card" placeholder="Номер кредитки">
+      <button class="btn-text btn-text_margin-top_20" data-bind="click: $parent.add">Добавить</button>
+    </form>
+  </div>
 </div>

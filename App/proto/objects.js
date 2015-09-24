@@ -1,7 +1,7 @@
 define('proto/objects', ['knockout'], function(ko) {
 
-  var descObject = function() {
-    this.User = function(id, name, number, email, adress, city, card) {
+  var descObject = {
+    User: function(id, name, number, email, adress, city, card) {
       this.id = ko.observable(id);
       this.name = ko.observable(name !== undefined ? name : 'No Name');
 
@@ -12,8 +12,12 @@ define('proto/objects', ['knockout'], function(ko) {
       this.card = card || '';
 
       this.active = ko.observable(false);
+    },
+    menuItem: function(name, url) {
+      this.name = name;
+      this.url = '#/' + url;
     }
   }
 
-  return new descObject();
+  return descObject;
 });
