@@ -4,54 +4,32 @@ require.config({
         "knockout": "node/knockout",
         "jquery": "node/jquery.min",
         "modules": "modules/",
+        "generic": "generic/",
         "proto": "proto/",
         "text": "node/text",
-        "Sammy": "../bower_components/sammy/lib/sammy"
+        "Sammy": "../bower_components/sammy/lib/sammy",
+        "required": "../node_modules/knockout.validation/dist/knockout.validation",
+        "requiredLocal": "../node_modules/knockout.validation/localization/ru-RU"
     }
 });
 
-require(["knockout", "Sammy", "proto/history", "proto/objects", "text"], function(ko, Sammy, historyService, objects) {
-
-  var registrationTemplate = function(name, model, template) {
-    if ( !ko.components.isRegistered(name) ) {
-      ko.components.register(name, {
-        viewModel: { require: model },
-        template: { require: template }
-      });
-    }
-  }
-
-  var menuItem = function(name, url) {
-    this.name = name;
-    this.url = '#/' + url;
-  }
+require(["knockout", "Sammy", "proto/settings", "required", "requiredLocal", "text"], function(ko, Sammy, settings, required, requiredLocal) {
 
   var self = this;
   var windowHash = window.location.hash;
-
-  self.templateRegister = ko.observable('home');
-  registrationTemplate('home', 'modules/home', 'text!../templates/home.html');
-
-  self.menu = ko.observableArray([
-    new menuItem('Главная', 'home'),
-    new menuItem('Таблица', 'tables'),
-    new menuItem('Блоки', 'blocks'),
-    new menuItem('Форма', 'forms')
-  ]);
-  self.menuActive = function(url) {
-    if ( url === '#/' + self.templateRegister() ) {
-      return true;
-    }
-  }
-
+  self.templateRegister = settings.templateRegister;
+  settings.init();
   ko.applyBindings();
+
+  ko.validation.locale('ru-RU');
+
 
   Sammy(function() {
     this.get('#/:id', function() {
       var param = this.params.id;
       var model = 'modules/' + param;
-      var template = 'text!../templates/' + param + '.html';
-      registrationTemplate(param, model, template)
+      var template = 'text!../templates/modules/' + param + '.html';
+      settings.registrationTemplate(param, model, template)
       self.templateRegister(param);
     });
 
@@ -59,20 +37,11 @@ require(["knockout", "Sammy", "proto/history", "proto/objects", "text"], functio
   }).run(windowHash);
 
 
-  // Тестовые данные
-  historyService.add('users', [
-    new objects.User(1, 'Tashya V. Fuentes', "+7 264 333-55-22", "euismod.est@musAeneaneget.net", "P.O. Box 251, 276 Nec Ave", "Newmarket", "5141178987072785"),
-    new objects.User(2, 'Asher X. Pennington', "+7 222 326-55-66", "consectetuer@purus.net", "P.O. Box 981, 6173 Nec, Rd.", "Cras-Avernas", "4257942325854678"),
-    new objects.User(3, 'Ariel H. Schmidt', "+7 231 844-44-66", "magnis.dis.parturient@Integer.net", "Ap #542-5772 Ipsum Avenue", "Pont-Saint-Martin", "5157078013438730"),
-    new objects.User(4, 'Bradley R. Hancock', "+7 222 357-55-22", "suscipit.nonummy@ac.co.uk", "333-7545 Neque St.", "Oostende", "4505783597473050"),
-    new objects.User(5, 'Simon V. Brewer', "+7 623 473-94-66", "amet.risus.Donec@eunibhvulputate.com", "379 Metus Avenue", "Saint-Prime", "5444664897220206")
-  ]);
-
-
 });
 
 define("proto/history", function() {
 
+  // Сервис для локального хранения данных.
   var historyService = function() {
     this.history = {};
   }
@@ -108,22 +77,99 @@ define("proto/history", function() {
 
 define('proto/objects', ['knockout'], function(ko) {
 
-  var descObject = function() {
-    this.User = function(id, name, number, email, adress, city, card) {
-      this.id = ko.observable(id);
-      this.name = ko.observable(name !== undefined ? name : 'No Name');
+  // Описание частоиспользуемых объектов.
+  var descObject = {
+    User: function(id, name, number, email, adress, city, card, rating) {
+      this.id = ko.observable(id); // ID.
+      this.name = ko.observable(name !== undefined ? name : 'No Name'); // Имя.
 
-      this.phone = ko.observable(number !== undefined ? number : 'x xxx xxx xx xx');
-      this.email = email || '';
-      this.adress = adress || '';
-      this.city = city || '';
-      this.card = card || '';
-
-      this.active = ko.observable(false);
+      this.phone = ko.observable(number !== undefined ? number : 'x xxx xxx xx xx'); // Номер телефона.
+      this.email = email || ''; // Электронная почта.
+      this.adress = adress || ''; // Адресс.
+      this.city = city || ''; // Город.
+      this.card = card || ''; // Номер кредитки.
+      this.rating = ko.observable(rating || null); // Оценка пользователя от 1 до 5.
+      // Задает цвет фона в зависимости от оценки пользователя.
+      this.userColor = function(rating) {
+        if ( typeof(rating()) === 'number' ) {
+          return 'user-block__color-' + rating();
+        }
+      }
+    },
+    menuItem: function(name, url) {
+      this.name = name;
+      this.url = '#/' + url;
     }
   }
 
-  return new descObject();
+  return descObject;
+});
+
+define('proto/settings', ['knockout', 'proto/history', 'proto/objects', 'text'], function(ko, historyService, objects) {
+
+  // Общие настройки системы и инициализация.
+  var settings = function() {
+    this.maxLengthItems = ko.observable(10); // Максимальное кол-во объектов.
+    this.templateRegister = ko.observable('home'); // Текущий state
+  };
+
+  settings.prototype = {
+    init: function() {
+      // Инициализация тестовых данных.
+      historyService.add('users', [
+        new objects.User(1, 'Tashya V. Fuentes', "+7 264 333-55-22", "euismod.est@musAeneaneget.net", "P.O. Box 251, 276 Nec Ave", "Newmarket", "5141178987072785"),
+        new objects.User(2, 'Asher X. Pennington', "+7 222 326-55-66", "consectetuer@purus.net", "P.O. Box 981, 6173 Nec, Rd.", "Cras-Avernas", "4257942325854678"),
+        new objects.User(3, 'Ariel H. Schmidt', "+7 231 844-44-66", "magnis.dis.parturient@Integer.net", "Ap #542-5772 Ipsum Avenue", "Pont-Saint-Martin", "5157078013438730"),
+        new objects.User(4, 'Bradley R. Hancock', "+7 222 357-55-22", "suscipit.nonummy@ac.co.uk", "333-7545 Neque St.", "Oostende", "4505783597473050"),
+        new objects.User(5, 'Simon V. Brewer', "+7 623 473-94-66", "amet.risus.Donec@eunibhvulputate.com", "379 Metus Avenue", "Saint-Prime", "5444664897220206")
+      ]);
+      // Инициализация меню.
+      this.registrationTemplate('menu', 'generic/menu', 'text!../templates/generic/menu.html');
+
+      // Загрузка шаблона при загрузке страницы.
+      this.registrationTemplate('home', 'modules/home', 'text!../templates/modules/home.html');
+    },
+    registrationTemplate: function(name, model, template) {
+      if ( !ko.components.isRegistered(name) ) {
+        if ( typeof(model) === 'function' ) {
+          ko.components.register(name, {
+            viewModel: model,
+            template: template
+          });
+        } else {
+          ko.components.register(name, {
+            viewModel: { require: model },
+            template: { require: template }
+          });
+        }
+      }
+    }
+  }
+
+  return new settings();
+});
+
+define('generic/menu', ['knockout', 'proto/objects', 'proto/settings'], function(ko, objects, settings) {
+
+  var MenuViewModel = function() {
+    var self = this;
+
+    self.menuActive = function(url) {
+      if ( url === '#/' + settings.templateRegister() ) {
+        return true;
+      }
+    }
+
+    self.menu = ko.observableArray([
+      new objects.menuItem('Главная', 'home'),
+      new objects.menuItem('Таблица', 'tables'),
+      new objects.menuItem('Блоки', 'blocks'),
+      new objects.menuItem('Форма', 'forms')
+    ]);
+
+  }
+
+  return MenuViewModel;
 });
 
 /*! jQuery v2.1.4 | (c) 2005, 2015 jQuery Foundation, Inc. | jquery.org/license */
@@ -2743,41 +2789,70 @@ define(['module'], function (module) {
     return text;
 });
 
-define('modules/blocks', ['knockout', 'proto/history', 'proto/objects'], function(ko, historyService, objects) {
+define('modules/blocks', ['knockout', 'proto/history', 'proto/objects', 'proto/settings'], function(ko, historyService, objects, settings) {
 
   var BlocksViewModel = function() {
     var self = this;
 
     self.items = ko.observableArray([]);
-
-    if ( !historyService.search('countItems') ) {
-      self.maxLengthTable = ko.observable(10);
-      historyService.add('countItems', self.maxLengthTable);
-    } else {
-      self.maxLengthTable = historyService.get('countItems');
-    }
+    self.maxLengthTable = settings.maxLengthItems;
 
     if ( historyService.search('users') ) {
       self.items = ko.observableArray(historyService.get('users'));
     }
 
-    self.userBlockToogle = function(item) {
-      item.active(!item.active());
+    // Like-widget
+    // Компоненты вынести в отдельные шаблоны
+    var ratingModel = function(params) {
+      this.value = params.value;
+      this.like = function(item) {
+        this.value(item);
+      }.bind(this);
     }
-    self.activeBlock = function(status) {
-      return status;
-    }
+
+    var ratingTemplate = '<div class="like-widget">' +
+      '<div class="like-widget__buttons" data-bind="foreach: [1,2,3,4,5], visible: !value()">' +
+        '<button data-bind="click: $parent.like, text: $data" class="btn-text"></button>' +
+      '</div>' +
+      '<div class="like-widget__text" data-bind="visible: value()">' +
+        'Вы оценили на <span data-bind="text: value"></span>!' +
+      '</div>' +
+    '</div>';
+
+    settings.registrationTemplate('like-widget', ratingModel, ratingTemplate);
 
   }
 
   return BlocksViewModel;
 });
 
-define('modules/forms', ['knockout', 'proto/history', 'proto/objects'], function(ko, historyService, objects) {
+define('modules/forms', ['knockout', 'proto/history', 'proto/objects', 'proto/settings'], function(ko, historyService, objects, settings) {
 
   var FormsViewModel = function() {
     var self = this;
+
+    // Общие данные.
+    // ФИО.
+    self.user = {
+      name: ko.observable(),
+      surname: ko.observable(),
+      patronymic: ko.observable()
+    }
+    self.user.fullName = ko.computed(function() {
+      var name = self.user.name() ? self.user.name() + " " : "",
+          surname = self.user.surname() ? self.user.surname() + " " : "",
+          patronymic = self.user.patronymic() ? self.user.patronymic() + " " : "";
+      return name + surname + patronymic;
+    });
+
+    // Макс кол-во объектов.
+    self.maxLengthTable = settings.maxLengthItems;
+
+    // Очиста полей и объявление нового объекта.
     self.clear = function() {
+      self.user.name("");
+      self.user.surname("");
+      self.user.patronymic("");
       if ( !ko.isObservable(self.item) ) {
         self.item = ko.observable(new objects.User(historyService.get('users').length + 1, "", ""));
       } else {
@@ -2785,16 +2860,25 @@ define('modules/forms', ['knockout', 'proto/history', 'proto/objects'], function
       }
     }
     self.clear();
+
+    // Добавление объекта в общий массив объектов.
     self.add = function() {
+      // Переносим ФИО в объект.
+      self.item().name(self.user.fullName());
+
+      // Проверка на вместимость массива
+      if ( self.maxLengthTable() === historyService.get('users').length ) {
+        return false;
+      }
+
+      // Добавление в массив объектов, в зависимости есть он или нет.
       if ( historyService.search('users') ) {
         historyService.push('users', self.item());
       } else {
         historyService.add('users', [self.item()]);
       }
-      self.clear()
+      self.clear();
     }
-
-
   }
 
   return FormsViewModel;
@@ -2809,7 +2893,7 @@ define('modules/home', ['knockout', 'proto/history'], function(ko, historyServic
   return HomeViewModel;
 });
 
-define('modules/tables', ['knockout', 'proto/history', 'proto/objects'], function(ko, historyService, objects) {
+define('modules/tables', ['knockout', 'proto/history', 'proto/objects', 'proto/settings'], function(ko, historyService, objects, settings) {
 
   var TableViewModel = function() {
     var self = this;
@@ -2824,13 +2908,7 @@ define('modules/tables', ['knockout', 'proto/history', 'proto/objects'], functio
     self.modal.open = ko.observable(false);
     self.modal.item = ko.observable({});
     self.items = ko.observableArray([]);
-
-    if ( !historyService.search('countItems') ) {
-      self.maxLengthTable = ko.observable(10);
-      historyService.add('countItems', self.maxLengthTable);
-    } else {
-      self.maxLengthTable = historyService.get('countItems');
-    }
+    self.maxLengthTable = settings.maxLengthItems;
 
     if ( historyService.search('users') ) {
       self.items = ko.observableArray(historyService.get('users'));

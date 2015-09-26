@@ -1,4 +1,4 @@
-define('proto/settings', ['knockout', 'proto/history', 'proto/objects', 'text'], function(ko, historyService, objects) {
+define('proto/settings', ['knockout', 'proto/history', 'proto/objects', "localeValidation", 'text'], function(ko, historyService, objects, localeValidation) {
 
   // Общие настройки системы и инициализация.
   var settings = function() {
@@ -8,6 +8,10 @@ define('proto/settings', ['knockout', 'proto/history', 'proto/objects', 'text'],
 
   settings.prototype = {
     init: function() {
+      // Валидатор
+      ko.validation.configuration.messagesOnModified = false; // Сразу вывод ошибок в валидаторе
+      ko.validation.locale("ru-RU");
+
       // Инициализация тестовых данных.
       historyService.add('users', [
         new objects.User(1, 'Tashya V. Fuentes', "+7 264 333-55-22", "euismod.est@musAeneaneget.net", "P.O. Box 251, 276 Nec Ave", "Newmarket", "5141178987072785"),

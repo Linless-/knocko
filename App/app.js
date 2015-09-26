@@ -7,7 +7,9 @@ require.config({
         "generic": "generic/",
         "proto": "proto/",
         "text": "node/text",
-        "Sammy": "../bower_components/sammy/lib/sammy"
+        "Sammy": "../bower_components/sammy/lib/sammy",
+        "knockout.validation": "../node_modules/knockout.validation/dist/knockout.validation",
+        "localeValidation": "../node_modules/knockout.validation/localization/ru-RU"
     }
 });
 
@@ -18,7 +20,6 @@ require(["knockout", "Sammy", "proto/settings", "text"], function(ko, Sammy, set
   self.templateRegister = settings.templateRegister;
   settings.init();
   ko.applyBindings();
-
 
   Sammy(function() {
     this.get('#/:id', function() {

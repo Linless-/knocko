@@ -493,3 +493,19 @@ input[type="text"].form-ctrl {
 .like-widget__text {
   margin: 10px 0;
 }
+
+
+.btn-text_type_forms {
+  width: 400px;
+  padding: 12px 8px;
+}
+
+.validationMessage {
+  width: 400px;
+  color: rgb(217, 34, 34);
+  font-weight: bold;
+  display: block;
+  margin: 0 auto;
+  margin-top: 5px;
+  padding: 8px;
+}

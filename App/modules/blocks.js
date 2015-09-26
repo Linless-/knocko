@@ -10,10 +10,8 @@ define('modules/blocks', ['knockout', 'proto/history', 'proto/objects', 'proto/s
       self.items = ko.observableArray(historyService.get('users'));
     }
 
-    self.userBlockToogle = function(item) {
-      item.active(!item.active());
-    }
-
+    // Like-widget
+    // Компоненты вынести в отдельные шаблоны
     var ratingModel = function(params) {
       this.value = params.value;
       this.like = function(item) {
