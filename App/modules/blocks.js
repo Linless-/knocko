@@ -3,13 +3,12 @@ define('modules/blocks', ['knockout', 'proto/history', 'proto/objects', 'proto/s
   var BlocksViewModel = function() {
     var self = this;
 
-    self.items = ko.observableArray([]);
-    self.maxLengthTable = settings.maxLengthItems;
-
+    self.items = ko.observableArray([]); // Список объектов.
+    self.maxLengthTable = settings.maxLengthItems; // Максимальная длинна элементов, берется из настроек.
+    // Полчаем список объектов из депозит сервиса, если они имеются.
     if ( historyService.search('users') ) {
       self.items = ko.observableArray(historyService.get('users'));
     }
-
   }
 
   return BlocksViewModel;
