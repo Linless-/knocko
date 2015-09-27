@@ -6,6 +6,7 @@ require.config({
         "modules": "modules/",
         "generic": "generic/",
         "proto": "proto/",
+        "components": "components/",
         "text": "node/text",
         "Sammy": "../bower_components/sammy/lib/sammy",
         "knockout.validation": "../node_modules/knockout.validation/dist/knockout.validation",

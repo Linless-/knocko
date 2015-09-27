@@ -1,4 +1,4 @@
-define('modules/blocks', ['knockout', 'proto/history', 'proto/objects', 'proto/settings'], function(ko, historyService, objects, settings) {
+define('modules/blocks', ['knockout', 'proto/history', 'proto/objects', 'proto/settings', 'components/like-widget'], function(ko, historyService, objects, settings) {
 
   var BlocksViewModel = function() {
     var self = this;
@@ -9,26 +9,6 @@ define('modules/blocks', ['knockout', 'proto/history', 'proto/objects', 'proto/s
     if ( historyService.search('users') ) {
       self.items = ko.observableArray(historyService.get('users'));
     }
-
-    // Like-widget
-    // Компоненты вынести в отдельные шаблоны
-    var ratingModel = function(params) {
-      this.value = params.value;
-      this.like = function(item) {
-        this.value(item);
-      }.bind(this);
-    }
-
-    var ratingTemplate = '<div class="like-widget">' +
-      '<div class="like-widget__buttons" data-bind="foreach: [1,2,3,4,5], visible: !value()">' +
-        '<button data-bind="click: $parent.like, text: $data" class="btn-text"></button>' +
-      '</div>' +
-      '<div class="like-widget__text" data-bind="visible: value()">' +
-        'Вы оценили на <span data-bind="text: value"></span>!' +
-      '</div>' +
-    '</div>';
-
-    settings.registrationTemplate('like-widget', ratingModel, ratingTemplate);
 
   }
 
