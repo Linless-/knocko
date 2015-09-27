@@ -31,7 +31,7 @@ require.config({
 require(["knockout", "Sammy", "proto/settings", "text"], function(ko, Sammy, settings) {
   var self = this;
   var windowHash = window.location.hash;
-  self.templateRegister = settings.templateRegister; // Наследуем прототип регистрации компонента.
+  self.templateRegister = settings.templateRegister; // Наименование текущего стейта.
   settings.init(); // Инициализируем настройки.
   ko.applyBindings();
 
