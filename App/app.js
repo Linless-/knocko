@@ -35,6 +35,7 @@ require(["knockout", "Sammy", "proto/settings", "text"], function(ko, Sammy, set
   settings.init(); // Инициализируем настройки.
   ko.applyBindings();
 
+
   Sammy(function() {
     this.get('#/:id', function() {
       var param = this.params.id;
