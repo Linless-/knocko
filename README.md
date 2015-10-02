@@ -12,5 +12,5 @@ Clone:
  4. bower install
 
 Start:
- 1. gulp
+ 1. gulp startServer
  2. http://localhost:8000
